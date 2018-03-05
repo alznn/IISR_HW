@@ -246,4 +246,32 @@ def Kmenans():
     plt.bar(ks, silhouette_avgs)
     plt.show()
     print(silhouette_avgs)
+    
+    def classfy(labels):
+    print("Here is classfy")
+    weather_text = []
+    with open('test1.txt','r',encoding='utf8') as fp:
+        for line in fp:
+            weather_text.append(line)
+
+
+    for i in range(0,30):
+        F = open("label_"+str(labels[i])+".csv", "a", encoding='utf8')
+        print(str(labels[i]),",",weather_text[i])
+        F.write(str(labels[i])+","+weather_text[i])
+        F.close()
+        
+def classfy(labels):
+    print("Here is classfy")
+    weather_text = []
+    with open('test1.txt','r',encoding='utf8') as fp:
+        for line in fp:
+            weather_text.append(line)
+
+
+    for i in range(0,30):
+        F = open("label_"+str(labels[i])+".csv", "a", encoding='utf8')
+        print(str(labels[i]),",",weather_text[i])
+        F.write(str(labels[i])+","+weather_text[i])
+        F.close()
 caculate()
