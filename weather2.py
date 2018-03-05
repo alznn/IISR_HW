@@ -205,17 +205,45 @@ def Kmenans():
     print("Kmenans")
     from sklearn import cluster, datasets,metrics
     X =[]
-#    import matplotlib.pyplot as plt
-#    kmeans = cluster.KMeans(n_clusters=3)
-#    kmeans.fit(data)
-    with open('result_w2v.txt','r',encoding='utf8') as fp:
-        for line in fp:
-            list(line)
-            X.append(line)
-    print(type(X))
-#    labels = kmeans.labels_
-#    centroids = kmeans.clxuster_centers_
-    kmeans = cluster.KMeans(n_clusters=3)
+    with open('result_w2v_binary.csv', 'r') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',')
+        for row in spamreader:
+            tmp = []
+            print(len(row))
+            for i in range(0, len(row)-1):
+                if (row[i] == ' '):
+                    continue
+                else:
+#                    print(i)
+#                    print(row[i])
+                    f = float(row[i])
+                    tmp.append(f)
+            X.append(tmp)
+            print(X)
+    import matplotlib.pyplot as plt
+    kmeans = cluster.KMeans(5)
     kmeans.fit(X)
 
-Kmenans()
+    cluster_labels = kmeans.labels_
+    print("分群結果：")
+    with open('分群.txt', 'a') as the_file:
+        the_file.write(str(cluster_labels))
+    print(cluster_labels)
+    print(len(cluster_labels))
+    print("---")
+
+    #最佳群
+    # 迴圈
+    silhouette_avgs = []
+    ks = range(10, 30)
+    for k in ks:
+        kmeans_fit = cluster.KMeans(k).fit(X)
+        cluster_labels = kmeans_fit.labels_
+        silhouette_avg = metrics.silhouette_score(X, cluster_labels)
+        silhouette_avgs.append(silhouette_avg)
+
+    # 作圖並印出 k = 10 到 30 的績效
+    plt.bar(ks, silhouette_avgs)
+    plt.show()
+    print(silhouette_avgs)
+caculate()
