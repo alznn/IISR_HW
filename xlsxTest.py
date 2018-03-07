@@ -4,16 +4,30 @@ import xlrd
 
 import yaml
 import re
-
-number = "[0-9]+"
-data = []
 #============================以下是 yaml======================================
+m = ":"
+c = u"([\(\<]*[\u4e00-\u9fff]+/[\u4e00-\u9fff]+.*)+"
+number = "[0-9]+"
+data=[]
 def regEXP(string):
     if re.findall(number, string):
         for reg in re.findall(number, string):
             tmp = str(reg)
             string = string.replace(tmp, "'"+tmp+"'")
+    if re.findall(m, string):
+        print("處理 : ")
+        for reg in re.findall(m, string):
+            tmp = str(reg)
+            string = string.replace(tmp, tmp+" ")
+    if re.findall(c, string):
+        print("處理 / ")
+        for reg in re.findall(c, string):
+            tmp = str(reg)
+            print(tmp)
+            string = string.replace(tmp, "'"+tmp+"'")
+            print (string)
     return string
+
 #============================以上是 yaml======================================
 def column_len(sheet, index):
     col_values = sheet.col_values(index)
