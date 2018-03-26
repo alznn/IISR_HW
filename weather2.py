@@ -180,6 +180,34 @@ def caculate():
     pattern = re.compile('.{1,1}')
     model = word2vec.Word2Vec.load("w2vdata.model")
     word_vectors = model.wv
+    
+    # 以下為w2v模型測試資料 #
+    print("=============== 旱 ======================")
+    test = model.most_similar(u'旱', )
+    for each in test:
+        print(each[0], "  ", each[1])
+    print("=============== 冬 ======================")
+    test = model.most_similar(u'冬', )
+    for each in test:
+        print(each[0], "  ", each[1])
+    print("=============== 雨 ======================")
+    test = model.most_similar(u'雨', )
+    for each in test:
+        print(each[0], "  ", each[1])
+    print("=============== 光 ======================")
+    test = model.most_similar(u'光', )
+    for each in test:
+        print(each[0], "  ", each[1])
+    print("=============== 雷 ======================")
+    test = model.most_similar(u'雷', )
+    for each in test:
+        print(each[0], "  ", each[1])
+    print("================ 龍 ====================")
+    test = model.most_similar(u'龍', )
+    for each in test:
+        print(each[0], "  ", each[1])
+    # 以上結束 #
+
     sum = [0 for x in range(200)]
     c = []
     print(len(data))
@@ -197,10 +225,11 @@ def caculate():
                     for i in range(0, (len(sum))):
                         sum[i] = round(sum[i] / len(data[index]),6)
         result.append(sum)
-    print(len(result))
-    normalwriteFile(result, "result_w2v.txt")
+        if(len(result)%1000==0):
+            print("len: ",len(result))
+    normalwriteFile(result, "result_w2v_binary.csv")
     Kmenans(result)
-
+#-----------------------------------------------------------------------
 def Kmenans():
     print("Kmenans")
     from sklearn import cluster, datasets,metrics
@@ -208,6 +237,10 @@ def Kmenans():
     with open('result_w2v_binary.csv', 'r') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',')
         for row in spamreader:
+            count = count+1
+            if (count % 1000 == 0):
+                print("K means count: ",count, "\n")
+                
             tmp = []
             print(len(row))
             for i in range(0, len(row)-1):
@@ -221,57 +254,51 @@ def Kmenans():
             X.append(tmp)
             print(X)
     import matplotlib.pyplot as plt
-    kmeans = cluster.KMeans(5)
-    kmeans.fit(X)
-
-    cluster_labels = kmeans.labels_
-    print("分群結果：")
-    with open('分群.txt', 'a') as the_file:
-        the_file.write(str(cluster_labels))
-    print(cluster_labels)
-    print(len(cluster_labels))
-    print("---")
-
-    #最佳群
+    # 最佳群
     # 迴圈
+    ks = [12,15,27,55]
     silhouette_avgs = []
-    ks = range(10, 30)
     for k in ks:
-        kmeans_fit = cluster.KMeans(k).fit(X)
-        cluster_labels = kmeans_fit.labels_
+        kmeans = cluster.KMeans(k, max_iter=500).fit(X)
+        cluster_labels = kmeans.labels_
         silhouette_avg = metrics.silhouette_score(X, cluster_labels)
         silhouette_avgs.append(silhouette_avg)
-
-    # 作圖並印出 k = 10 到 30 的績效
+        print(k," 分群結果：")
+        print(len(cluster_labels))
+        a = cluster_labels
+        classfy(str(k),a)
+        print("---")
+    # 作圖並印出
     plt.bar(ks, silhouette_avgs)
     plt.show()
     print(silhouette_avgs)
     
-    def classfy(labels):
-    print("Here is classfy")
-    weather_text = []
-    with open('test1.txt','r',encoding='utf8') as fp:
-        for line in fp:
-            weather_text.append(line)
 
-
-    for i in range(0,30):
-        F = open("label_"+str(labels[i])+".csv", "a", encoding='utf8')
-        print(str(labels[i]),",",weather_text[i])
-        F.write(str(labels[i])+","+weather_text[i])
-        F.close()
-        
+#-------------------------------------------        
 def classfy(labels):
+ import os
+    path = "C:\\Users\\hp\\PycharmProjects\\weather\\"+k
+    if not os.path.isdir(path):
+        os.mkdir(path)
     print("Here is classfy")
     weather_text = []
-    with open('test1.txt','r',encoding='utf8') as fp:
+    weather_compare = []
+    with open('E.txt', 'r', encoding='utf8') as fp:
         for line in fp:
             weather_text.append(line)
-
-
-    for i in range(0,30):
-        F = open("label_"+str(labels[i])+".csv", "a", encoding='utf8')
-        print(str(labels[i]),",",weather_text[i])
-        F.write(str(labels[i])+","+weather_text[i])
+    with open('對照資料.txt', 'r', encoding='utf8') as fp:
+        for line in fp:
+            weather_compare.append(line)
+    for i in range(0, len(weather_text)):
+        F = open(path +"\\" + "label_" + str(labels[i]) + ".csv", "a", encoding='utf8')
+        L = open(path + "\\" + "對照 label " + str(labels[i]) + ".csv", "a", encoding='utf8')
+        if(i % 1000 == 0):
+            print("classfy: ",i,"\n")
+        F.write(str(labels[i]) + "," + weather_text[i])
+        L.write(str(labels[i])+" , "+weather_compare[i])
         F.close()
+        L.close()
+#traininw2v()
 caculate()
+# Kmenans()
+
