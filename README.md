@@ -5,6 +5,8 @@ IISR_homework
 2) 利用 Regular Expression 找名字，並輸出ouput2.txt (不算很滿意)
 3) 筆記最近 python 心得：
     i. python 為 pass by assigment，所以在一些 list 的 append操作上會需要開新的空間儲存原始資料，以免後面對資料進行clear()時，所有相關有用到的object通通會一起被clear()掉
+    ii. dict包 list的用法可以參考後處理那篇
+    iii. regEXP 跟結巴參考 weather
 4) 刻苦銘心的實驗心得：
   LogisticRegression 中，fit()使用上有幾項注意事項
     1. 針對參數X，為所謂的測試樣本集，實驗下來發現每一筆樣本data的特徵值都要以list形式儲存，若今天只有一筆特徵值，還是要壓成一個list以後append進去      train_vec中
