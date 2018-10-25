@@ -275,7 +275,7 @@ def Kmenans():
     
 
 #-------------------------------------------        
-def classfy(labels):
+def classfy(k,labels):
  import os
     path = "C:\\Users\\hp\\PycharmProjects\\weather\\"+k
     if not os.path.isdir(path):
